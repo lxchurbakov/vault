@@ -1,0 +1,22 @@
+{
+  "name": "vault",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/backend/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mcfinley/vault.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mcfinley/vault/issues"
+  },
+  "homepage": "https://github.com/mcfinley/vault#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
