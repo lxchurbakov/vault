@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/backend/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "server:start": "npx ts-node src/server/index.ts"
   },
   "repository": {
     "type": "git",
@@ -17,6 +17,12 @@
   },
   "homepage": "https://github.com/mcfinley/vault#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1"    
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.6",
+    "@types/node": "^14.0.13",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.5"
   }
 }
