@@ -1,61 +1,41 @@
-// POST /vaults (password: string) -> OK (id) id is long random generated uuid string
-// POST /vaults/:id/login (password: string) -> One time token for this vault // one time token binds to IP and is time limited
-// PUT /vaults/:id (token: string) -> Update vault password?
-// DELETE /vaults/:id (token: string) -> delete the vault and all of it's files
-//
-// GET / vaults/:id (token: string) -> Vault info
-// GET /vaults/:id/files (token: string, path: string) -> Vault files list (tree structure with ids?)
-// POST /vaults/:id/files (token: string) -> Vault file upload
-// GET /vault/:id/files/:id -> download a file
-// DELETE /vault/:id/files/:id -> delete a file
-
 import express from 'express'
+import files from './files'
 
 const router = express.Router()
 
 /* Create a vault (password: string, body: ?) */
 router.post('/', (req, res) => {
-
+  /* Validated the body and the password */
+  /* Create an id */
+  /* Create an object in database */
 })
 
 /* Login to the vault (password: string) */
-router.post('/:id/login', (req, res) => {
-
-})
-
-/* Update the vault (token: string, body: ?) */
-router.put('/:id', (req, res) => {
-
-})
-
-/* Delete the vault (token: string) */
-router.delete('/:id', (req, res) => {
-
+router.post('/:vaultId/login', (req, res) => {
+  /* Validate the password */
+  /* Create a token */
+  /* Store it in redis */
 })
 
 /* Get vault info (token: string) */
-router.get('/:id', (req, res) => {
+router.get('/:vaultId', (req, res) => {
+  /* Validate the token */
+  /* Retrieve data from db */
+})
 
+/* Update the vault (token: string, body: ?) */
+router.put('/:vaultId', (req, res) => {
+  /* Validate the token */
+  /* Update the database object */
+})
+
+/* Delete the vault (token: string) */
+router.delete('/:vaultId', (req, res) => {
+  /* Validate the token */
+  /* Delete data in db + files cascade */
 })
 
 /* Get vault files hierarchy (token: string, path: string = '/') */
-router.get('/:id/files', (req, res) => {
-
-})
-
-/* Download a file (token: string) */
-router.get('/:id/files/:id', (req, res) => {
-
-})
-
-/* Upload a file (token: string) */
-router.post('/:id/files', (req, res) => {
-
-})
-
-/* Delete a file by id (token: string) */
-router.delete('/:id/files/:id', (req, res) => {
-
-})
+router.use('/:vaultId/files', files)
 
 export default router
