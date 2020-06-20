@@ -4,7 +4,10 @@
   "description": "",
   "main": "src/backend/index.js",
   "scripts": {
-    "server:start": "npx ts-node src/server/index.ts"
+    "server:build": "npx tsc",
+    "server:build:watch": "npx tsc --watch",
+    "server:run": "node dist/index.js",
+    "server:run:watch": "npx nodemon -w dist -x 'npm run server:run'"
   },
   "repository": {
     "type": "git",
@@ -17,12 +20,15 @@
   },
   "homepage": "https://github.com/mcfinley/vault#readme",
   "dependencies": {
-    "express": "^4.17.1"    
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "mysql2": "^2.1.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.6",
     "@types/node": "^14.0.13",
-    "ts-node": "^8.10.2",
+    "nodemon": "^2.0.4",
+    "tslib": "^2.0.0",
     "typescript": "^3.9.5"
   }
 }
