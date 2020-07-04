@@ -1,8 +1,9 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 
-import vaults from './vaults'
-import database from './database'
+import vaultsRouter from './routes/vaults'
+import database from './core/database'
+import redis from './core/redis'
 
 /* Create the application */
 const app = express()
@@ -12,11 +13,12 @@ app.use(bodyParser.json())
 app.get('/health', async (req, res) => {
   res.status(200).json({
     database: await database.health(),
+    redis: await redis.health(),
   })
 })
 
 /* Vaults router */
-app.use('/vaults', vaults)
+app.use('/vaults', vaultsRouter)
 
 app.use((err, req, res, next) => {
   if (!!err.code) {
