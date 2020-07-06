@@ -23,6 +23,7 @@ module.exports = {
       { test: /\.ts/, loader: 'ts-loader' },
       { test: /\.html$/, loader: 'file-loader?name=[name].html' },
       { test: /\.png/, loader: 'file-loader?name=[name].png' },
+      { test: /\.css/, loaders: ['style-loader', 'css-loader'] },
     ],
   },
 }

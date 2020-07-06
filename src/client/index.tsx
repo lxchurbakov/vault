@@ -1,4 +1,5 @@
 import './index.html'
+import 'antd/dist/antd.css'
 
 import * as ReactDOM from 'react-dom'
 import * as React from 'react'

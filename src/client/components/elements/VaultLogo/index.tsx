@@ -10,14 +10,14 @@ const ImageBackground = styled.div`
 
   width: 46px;
   height: 46px;
-  background: #ffc10740;
+  background: #40a9ff40;
   border-radius: 46px;
 
   cursor: pointer;
   transition: background 100ms ease;
 
   &:hover {
-    background: #ffc10780;
+    background: #40a9ff80;
   }
 `
 
