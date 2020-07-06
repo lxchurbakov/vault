@@ -20,20 +20,13 @@ const ContentWrap = styled.div`
   display: flex;
   align-items: center;
   position: relative;
-
-  width: 100%;
-`
-
-const VaultLogoOnTheLeft = styled(VaultLogo)`
-  position: relative;
-  left: 0;
 `
 
 export default () => {
   return (
     <WhiteBackground>
       <ContentWrap>
-        <VaultLogoOnTheLeft />
+        <VaultLogo />
       </ContentWrap>
     </WhiteBackground>
   )

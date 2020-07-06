@@ -1,10 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const OuterWrap = styled.div`
-
-`
-
 const TopRow = styled.div`
   display: flex;
   align-items: center;
@@ -15,6 +11,7 @@ const InnerWrap = styled.div`
   padding: 24px;
   border-radius: 8px;
   border: 1px solid #efefef;
+  background: white;
 
   display: flex;
   align-items: center;
@@ -22,12 +19,12 @@ const InnerWrap = styled.div`
 `
 
 export default ({ title, children, right = null, ...props }) => (
-  <OuterWrap {...props}>
+  <div {...props}>
     <TopRow>
       <h1>{title}</h1>
       {right}
     </TopRow>
 
     <InnerWrap>{children}</InnerWrap>
-  </OuterWrap>
+  </div>
 )

@@ -14,11 +14,6 @@ const ImageBackground = styled.div`
   border-radius: 46px;
 
   cursor: pointer;
-  transition: background 100ms ease;
-
-  &:hover {
-    background: #40a9ff80;
-  }
 `
 
 const LockImage = styled.img.attrs({
@@ -29,17 +24,6 @@ const LockImage = styled.img.attrs({
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
-
-  transform: translateY(0);
-  transition: transform 100ms ease;
-
-  &:hover {
-    transform: translateY(-2px);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
 `
 
 export default (props: any) => (
