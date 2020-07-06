@@ -25,6 +25,7 @@
   "homepage": "https://github.com/mcfinley/vault#readme",
   "dependencies": {
     "antd": "^4.4.1",
+    "axios": "^0.19.2",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "lodash": "^4.17.15",
