@@ -4,17 +4,18 @@ const router = express.Router({ mergeParams: true })
 
 // + vaultId param everywhere
 
-/* Get vault files hierarchy (token: string, path: string = '/') */
-router.get('/', (req, res) => {
-  /* Validate the token */
-  /* Get all files from db with path starting from PATH */
-})
-
-/* Upload a file (token: string) */
 router.post('/', (req, res) => {
-  /* Validate the token */
   /* pipe file to cipher and save it in files folder with custom filename */
   /* Create a db instance with new filename (save old somwhere) */
+})
+
+/* Get vault files hierarchy (token: string, path: string = '/') */
+router.get('/files', (req, res) => {
+  const { vaultToken } = req.params
+  const { path } = req.query
+
+
+  /* Get all files from db with path starting from PATH */
 })
 
 /* Download a file (token: string, password: string) */

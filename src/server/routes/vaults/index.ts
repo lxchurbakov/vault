@@ -45,28 +45,32 @@ router.post('/:vaultToken/login', asyncMiddleware(async (req, res) => {
   /* Store the auth -> vault token relation */
   await redis.hset('auths', authToken, vault.token)
 
-  res.sendStatus(200)
+  res.status(200).json({ token: authToken })
 }))
 
 /**
- * All the code above requires authentication to work
+ * All the code below requires authentication to work
  */
 
-/* TODO put it out here */
-
-/**
- * Get vault information by token
- */
-router.get('/:vaultToken', asyncMiddleware(async (req, res) => {
+const authMiddleware = async (req, res, next) => {
   const { vaultToken } = req.params
   const { token } = req.query
 
   /* Validate the token from redis */
-  const authVaultToken = await redis.hget('auths', token)
+  const authVaultToken = await redis.hget('auths', token || '')
 
   if (!authVaultToken || vaultToken !== authVaultToken) {
-    throw new HttpError(404, 'The vault is not found or the token is invalid')
+    next(new HttpError(404, 'The vault is not found or the token is invalid'))
+  } else {
+    next()
   }
+}
+
+/**
+ * Get vault information by token
+ */
+router.get('/:vaultToken', authMiddleware, asyncMiddleware(async (req, res) => {
+  const { vaultToken } = req.params
 
   const vault = await database.queryOne<Vault>(`SELECT * FROM vault WHERE token = ? LIMIT 1`, [vaultToken])
   const vaultView = _.omit(vault, ['hash'])
@@ -77,18 +81,11 @@ router.get('/:vaultToken', asyncMiddleware(async (req, res) => {
 /**
  * Update the vault (there is actually nothing to update for now)
  */
-router.put('/:vaultToken', asyncMiddleware(async (req, res) => {
+router.put('/:vaultToken', authMiddleware, asyncMiddleware(async (req, res) => {
   const { vaultToken } = req.params
-  const { token } = req.query
-
-  /* Validate the token from redis */
-  const authVaultToken = await redis.hget('auths', token)
-
-  if (!authVaultToken || vaultToken !== authVaultToken) {
-    throw new HttpError(404, 'The vault is not found or the token is invalid')
-  }
 
   /* Update the database object */
+  // const vault = await database.queryOne<Vault>(`SELECT * FROM vault WHERE token = ? LIMIT 1`, [vaultToken])
 
   /* / */
   res.sendStatus(200)
@@ -101,6 +98,6 @@ router.delete('/:vaultToken', (req, res) => {
 })
 
 /* Get vault files hierarchy (token: string, path: string = '/') */
-router.use('/:vaultToken/files', filesRouter)
+router.use('/:vaultToken/files', authMiddleware, filesRouter)
 
 export default router
