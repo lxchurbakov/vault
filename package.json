@@ -11,7 +11,8 @@
     "server:dev": "run-p server:build:watch server:run:watch",
     "client:build": "npx webpack --config src/client/webpack.config.js",
     "client:build:watch": "npx webpack --watch --config src/client/webpack.config.js",
-    "client:dev": "npx webpack-dev-server --config src/client/webpack.config.js"
+    "client:dev": "npx webpack-dev-server --config src/client/webpack.config.js",
+    "dev": "run-p client:dev server:dev"
   },
   "repository": {
     "type": "git",

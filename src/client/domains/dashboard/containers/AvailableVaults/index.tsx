@@ -7,6 +7,7 @@ import ContentContainer from '@/components/elements/ContentContainer'
 import ContentSection from '@/components/elements/ContentSection'
 
 import CreateVaultModal from '../../components/CreateVaultModal'
+import VaultCard from '../../components/VaultCard'
 
 import dashboardStore from '../../store'
 
@@ -27,7 +28,7 @@ export default class AvailableVaults extends React.PureComponent<Props> {
 
   render () {
     const createVaultModalVisible = this.props.dashboardStore.createVaultModal.visible
-    const availableVaults = toJS(this.props.dashboardStore.availableVaults)
+    const vaults = toJS(this.props.dashboardStore.vaults)
 
     return (
       <ContentContainer style={{ paddingTop: 24 }}>
@@ -42,15 +43,15 @@ export default class AvailableVaults extends React.PureComponent<Props> {
           title="Available Vaults"
           right={<Button onClick={this.showCreateVaultModal}>Create</Button>}
         >
-          {availableVaults.length === 0 && (
+          {vaults.length === 0 && (
             <Typography.Text disabled>No Vaults Available</Typography.Text>
           )}
 
-          {availableVaults.map((vault) => (
-            <div>
-              {vault.name}: {vault.token}
-            </div>
-          ))}
+          <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+            {vaults.map((vault, index) => (
+              <VaultCard style={{ marginRight: 12 }} vault={vault} key={index} />
+            ))}
+          </div>
         </ContentSection>
 
         <CreateVaultModal

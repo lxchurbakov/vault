@@ -8,7 +8,7 @@ const connection = mysql.createConnection({
   database : 'test'
 })
 
-connection.connect();
+connection.connect()
 
 export default {
   health: () => new Promise<boolean>((resolve, reject) => {
