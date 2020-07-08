@@ -1,0 +1,19 @@
+version: '2'
+services:
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./client/src:/app/src
+    ports:
+      - 8080:8080
+    environment:
+      - NODE_ENV=development
+  # mongo:
+  #   command: mongod
+  #   image: mongo:3.2.0
+  #   ports:
+  #     - "27100:27017" # map port to none standard port, to avoid conflicts with locally installed mongodb.
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock

@@ -1,7 +1,7 @@
 const path = require('path')
 
 module.exports = {
-  context: __dirname,
+  context: path.resolve(__dirname, './src'),
   entry: './index.tsx',
 
   output: {
@@ -11,11 +11,15 @@ module.exports = {
 
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, '.'),
+      '@': path.resolve(__dirname, './src'),
     },
     extensions: [
       '.ts', '.js', '.tsx', '.json'
     ],
+  },
+
+  devServer: {
+    host: '0.0.0.0',
   },
 
   module: {
