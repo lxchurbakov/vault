@@ -8,14 +8,15 @@ services:
     ports:
       - ${REDIS_PORT}:6379
   sql:
-    image: postgres:latest
+    image: mysql:5.7
     restart: always
+    command: --default-authentication-plugin=mysql_native_password
     ports:
-      - ${SQL_PORT}:5432
+      - ${SQL_PORT}:3306
     environment:
-      POSTGRES_PASSWORD: "${SQL_PASSWORD}"
-      POSTGRES_DB: "${SQL_DATABASE}"
-      POSTGRES_USER: "${SQL_USER}"
+      MYSQL_ROOT_PASSWORD: "${SQL_PASSWORD}"
+      MYSQL_DATABASE: "${SQL_DATABASE}"
+      MYSQL_USER: "${SQL_USER}"
   server:
     build:
       context: ./server

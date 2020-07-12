@@ -4,28 +4,41 @@ import dotenv from 'dotenv'
 dotenv.config({ path: '.env.dev' })
 dotenv.config()
 
-import sql from './storage/sql'
-import redis from './storage/redis'
-
 import express from 'express'
+import bodyParser from 'body-parser'
+
+import vaultsRouter from './routes/vaults'
+import database from './core/database'
+import redis from './core/redis'
 
 const app = express()
 
-const safe = async (f) => {
-  try {
-    await f()
-    return true
-  } catch (e) {
-    console.log(e)
-    return false
-  }
-}
+app.use(bodyParser.json())
+
+/* Disable CORS */
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'origin, content-type, accept');
+  next()
+})
 
 app.get('/health', async (req, res) => {
-  res.json({
-    sql: await safe(sql.health),
-    redis: await safe(redis.health),
+  res.status(200).json({
+    database: await database.health(),
+    redis: await redis.health(),
   })
+})
+
+/* Vaults router */
+app.use('/vaults', vaultsRouter)
+
+// /* Error middleware *
+app.use((err, req, res, next) => {
+  if (!!err.code) {
+    res.status(err.code).send(err.toString())
+  } else {
+    res.status(500).send(err.toString())
+  }
 })
 
 app.listen(process.env.SERVER_PORT, () => {

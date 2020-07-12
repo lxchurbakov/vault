@@ -10,6 +10,4 @@ COPY migrations ./migrations
 
 RUN npm install
 
-RUN ls -laF
-
 CMD ["npm", "start"]
