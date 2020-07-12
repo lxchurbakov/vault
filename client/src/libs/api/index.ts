@@ -1,9 +1,6 @@
-import axios from 'axios'
-
-const instance = axios.create({
-  baseURL: 'http://localhost:8500'
-})
+// console.log(process.env.SERVER_HOST)
+// console.log(process.env.SERVER_PORT)
 
 export default {
-  createVault: (name: string, password: string) => instance.post<{ token: string }>('/vaults', { name, password })
+
 }

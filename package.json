@@ -1,0 +1,8 @@
+{
+  "name": "vault",
+  "version": "1.0.0",
+  "scripts": {
+    "up": "source .env && docker-compose up",
+    "down": "docker-compose down"
+  }
+}

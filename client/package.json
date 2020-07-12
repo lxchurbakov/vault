@@ -1,47 +1,37 @@
 {
-  "name": "vault-client",
+  "name": "client",
   "version": "1.0.0",
   "description": "",
+  "main": "index.js",
   "scripts": {
-    "build": "npx webpack --config src/client/webpack.config.js",
-    "build:watch": "npx webpack --watch --config src/client/webpack.config.js",
-    "dev": "npx webpack-dev-server --config webpack.config.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mcfinley/vault.git"
+    "dev": "npx webpack-dev-server",
+    "start": "npx webpack && cd dist && npx static-server --port $CLIENT_PORT",
+    "postinstall": "cp ../.env .env"
   },
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/mcfinley/vault/issues"
-  },
-  "homepage": "https://github.com/mcfinley/vault#readme",
-  "dependencies": {
-    "antd": "^4.4.1",
-    "axios": "^0.19.2",
-    "lodash": "^4.17.15",
-    "mobx": "^5.15.4",
-    "mobx-react": "^6.2.2",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-router-dom": "^5.2.0",
-    "styled-components": "^5.1.1"
-  },
   "devDependencies": {
     "@types/lodash": "^4.14.157",
-    "@types/node": "^14.0.13",
-    "@types/react": "^16.9.41",
+    "@types/react": "^16.9.42",
     "@types/react-dom": "^16.9.8",
-    "@types/styled-components": "^5.1.0",
+    "babel-loader": "^8.0.6",
     "css-loader": "^3.6.0",
     "file-loader": "^6.0.0",
+    "html-webpack-plugin": "^4.3.0",
     "style-loader": "^1.2.1",
     "ts-loader": "^7.0.5",
-    "tslib": "^2.0.0",
-    "typescript": "^3.9.5",
+    "typescript": "^3.9.6",
     "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.12",
+    "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.11.0"
+  },
+  "dependencies": {
+    "antd": "^4.4.2",
+    "dotenv": "^8.2.0",
+    "lodash": "^4.17.19",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "static-server": "^2.2.1",
+    "styled-components": "^5.1.1"
   }
 }

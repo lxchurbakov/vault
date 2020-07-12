@@ -1,29 +1,32 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "./src",
-    "outDir": "./dist",
+    "baseUrl": ".",
+    "outDir": "../../dist/server",
     "sourceMap": true,
     "declaration": false,
-    "module": "commonjs",
-    "esModuleInterop": true,
     "downlevelIteration": true,
     "experimentalDecorators": true,
+    "module": "commonjs",
     "moduleResolution": "node",
+    "esModuleInterop": true,
     "importHelpers": true,
-    "target": "ES3",
+    "target": "es2015",
     "typeRoots": [
       "node_modules/@types",
       "src/types"
     ],
     "lib": [
       "es2018",
+      "dom"
     ],
+    "jsx": "react",
     "paths": {
-      "@/*": ["./src/*"],
+      "@/*": ["./*"],
     }
   },
   "include": [
-    "./src/**/*.ts"
+    "./**/*.ts",
+    "./**/*.tsx",
   ],
 }
