@@ -1,3 +1,9 @@
+require('dotenv')
+import dotenv from 'dotenv'
+
+dotenv.config({ path: '.env.dev' })
+dotenv.config()
+
 import express from 'express'
 import bodyParser from 'body-parser'
 
@@ -5,8 +11,9 @@ import vaultsRouter from './routes/vaults'
 import database from './core/database'
 import redis from './core/redis'
 
-/* Create the application */
 const app = express()
+
+app.use(bodyParser.json())
 
 /* Disable CORS */
 app.use((req, res, next) => {
@@ -14,8 +21,6 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Headers', 'origin, content-type, accept');
   next()
 })
-
-app.use(bodyParser.json())
 
 app.get('/health', async (req, res) => {
   res.status(200).json({
@@ -27,6 +32,7 @@ app.get('/health', async (req, res) => {
 /* Vaults router */
 app.use('/vaults', vaultsRouter)
 
+// /* Error middleware *
 app.use((err, req, res, next) => {
   if (!!err.code) {
     res.status(err.code).send(err.toString())
@@ -35,5 +41,6 @@ app.use((err, req, res, next) => {
   }
 })
 
-/* Startup */
-app.listen(8500)
+app.listen(process.env.SERVER_PORT, () => {
+  console.log('Server is listening at', process.env.SERVER_PORT)
+})

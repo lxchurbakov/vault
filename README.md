@@ -1,3 +1,3 @@
 # Vault
 
-This is a WIP project. 
+Keep your files safe with [Vault](https://vault.mcfinley.site).

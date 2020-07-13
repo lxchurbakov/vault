@@ -1,9 +1,0 @@
-FROM node:latest
-
-EXPOSE 8080
-
-COPY package.json tsconfig.json webpack.config.js /app/
-RUN cd /app && npm i
-
-WORKDIR /app
-CMD npm run dev

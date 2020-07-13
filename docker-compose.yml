@@ -1,19 +1,35 @@
-version: '2'
+version: '3'
 services:
+  redis:
+    image: 'bitnami/redis:latest'
+    restart: always
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - ${REDIS_PORT}:6379
+  sql:
+    image: mysql:5.7
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - ${SQL_PORT}:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: "${SQL_PASSWORD}"
+      MYSQL_DATABASE: "${SQL_DATABASE}"
+      MYSQL_USER: "${SQL_USER}"
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+    depends_on:
+      - sql
   client:
     build:
       context: ./client
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ./client/src:/app/src
+      dockerfile: Dockerfile
     ports:
-      - 8080:8080
+      - ${CLIENT_PORT}:${CLIENT_PORT}
     environment:
-      - NODE_ENV=development
-  # mongo:
-  #   command: mongod
-  #   image: mongo:3.2.0
-  #   ports:
-  #     - "27100:27017" # map port to none standard port, to avoid conflicts with locally installed mongodb.
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
+      CLIENT_PORT: "${CLIENT_PORT}"
