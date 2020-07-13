@@ -13,3 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
     ReactDOM.render(<SignInPage />, app)
   }
 })
+
+fetch(`http://${process.env.SERVER_HOST}:${process.env.SERVER_PORT}/health`).then(console.log).catch(console.error)
+
+// console.log(`${process.env.SERVER_HOST}:${process.env.SERVER_PORT}/health`)
+
+// '': JSON.stringify(process.env.SERVER_HOST),
+// 'process.env.SERVER_PORT': JSON.stringify(process.env.SERVER_PORT),

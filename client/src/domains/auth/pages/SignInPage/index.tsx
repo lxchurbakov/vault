@@ -54,7 +54,7 @@ export default () => {
         </Button>
       </Form.Item>
 
-      <UserInput user={{ name: '', age: 12 }} />
+      <UserInput user={{ name: '', age: 12 }} onChange={() => {/* */}}/>
     </Form>
   )
 }
