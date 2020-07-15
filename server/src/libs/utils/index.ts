@@ -29,10 +29,6 @@ export const routeHandler = (f) => (req, res, next) => {
  * Security utils
  */
 
-export const getPasswordHash = (password: string) => {
-  return crypto.createHash('sha256').update(password + '/' + process.env.SALT).digest().toString('base64')
-}
-
 export const createJWT = (data: any) => {
   return jwt.sign(data, process.env.JWT_SECRET)
 }
@@ -43,4 +39,12 @@ export const readJWT = (token: string): any => {
 
 export const createUUID = () => {
   return uuid()
+}
+
+export const generateSalt = () => {
+  return crypto.randomBytes(128).toString('base64')
+}
+
+export const getPasswordHash = async (password: string, salt: string, iterations: number) => {
+  return crypto.pbkdf2Sync(password, salt, iterations, 512, process.env.HASH_FUNC).toString('hex')
 }

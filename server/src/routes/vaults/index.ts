@@ -1,11 +1,9 @@
 import _ from 'lodash'
 import express from 'express'
 
-import database from '../../libs/database'
-import redis from '../../libs/redis'
-import { createUUID, HttpError, routeHandler, getPasswordHash, createJWT, readJWT } from '../../libs/utils'
+import { HttpError, routeHandler, createJWT, readJWT } from '../../libs/utils'
 
-import vaults, { Vault } from '../../models/vaults'
+import vaults, { Vault } from '../../services/vaults'
 
 // import filesRouter from './files'
 
@@ -25,10 +23,7 @@ router.get('/', routeHandler(async (req, res) => {
  * Create a vault
  */
 router.post('/', routeHandler(async (req, res) => {
-  const { name, password } = req.body
-  const { token } = await vaults.create(name, password)
-
-  res.json(token)
+  res.json(await vaults.create(req.body.name, req.body.assword))
 }))
 
 /**
@@ -37,12 +32,11 @@ router.post('/', routeHandler(async (req, res) => {
 router.post('/:vaultToken/login', routeHandler(async (req, res) => {
   const { vaultToken } = req.params
   const { password } = req.body
-  const passwordHash = getPasswordHash(password)
 
-  const vault = await vaults.getByToken(vaultToken)
+  const passwordCorrect = vaults.verify(vaultToken, password)
 
-  if (!vault || vault.password_hash !== passwordHash) {
-    throw new HttpError(404, 'Vault not found')
+  if (!passwordCorrect) {
+      throw new HttpError(404, 'Vault not found')
   }
 
   res.json(createJWT({ vaultToken }))
