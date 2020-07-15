@@ -1,15 +1,15 @@
 require('dotenv')
 import dotenv from 'dotenv'
 
-dotenv.config({ path: '.env.dev' })
 dotenv.config()
 
 import express from 'express'
 import bodyParser from 'body-parser'
 
+import database from './libs/database'
+import redis from './libs/redis'
+
 import vaultsRouter from './routes/vaults'
-import database from './core/database'
-import redis from './core/redis'
 
 const app = express()
 
@@ -32,7 +32,7 @@ app.get('/health', async (req, res) => {
 /* Vaults router */
 app.use('/vaults', vaultsRouter)
 
-// /* Error middleware *
+/* Error middleware */
 app.use((err, req, res, next) => {
   if (!!err.code) {
     res.status(err.code).send(err.toString())

@@ -1,103 +1,141 @@
 import _ from 'lodash'
 import express from 'express'
 
-import database from '../../core/database'
-import redis from '../../core/redis'
-import security from '../../core/security'
-import { HttpError, asyncMiddleware } from '../../core/utils'
+import database from '../../libs/database'
+import redis from '../../libs/redis'
+import { createUUID, HttpError, routeHandler, getPasswordHash, createJWT, readJWT } from '../../libs/utils'
 
-import filesRouter from './files'
+import vaults, { Vault } from '../../models/vaults'
+
+// import filesRouter from './files'
 
 const router = express.Router()
 
-export type Vault = { token: string, hash: string }
+/**
+ * Get All vaults (dev only)
+ */
+router.get('/', routeHandler(async (req, res) => {
+  const data = await vaults.getAll()
 
-/* Create a vault (password: string) */
-router.post('/', async (req, res) => {
-  /* Validated the body and the password */
-  const { password } = req.body
+  // res.json(data.map((vault) => _.pick(vault, ['name', 'token', 'created_at'])))
+  res.json(data)
+}))
 
-  /* Create a token and password hash */
-  const token = security.randomToken()
-  const hash = security.passwordHash(password)
+/**
+ * Create a vault
+ */
+router.post('/', routeHandler(async (req, res) => {
+  const { name, password } = req.body
+  const { token } = await vaults.create(name, password)
 
-  /* Create an object in database */
-  await database.query(`INSERT INTO vault (token, hash) VALUES(?, ?)`, [token, hash])
+  res.json(token)
+}))
 
-  res.status(200).json({ token })
-})
-
-/* Login to the vault (password: string) */
-router.post('/:vaultToken/login', asyncMiddleware(async (req, res) => {
-  /* Validate the password */
+/**
+ * Login to the vault
+ */
+router.post('/:vaultToken/login', routeHandler(async (req, res) => {
   const { vaultToken } = req.params
   const { password } = req.body
-  const hash = security.passwordHash(password)
+  const passwordHash = getPasswordHash(password)
 
-  const vault = await database.queryOne<Vault>(`SELECT * FROM vault WHERE token = ? LIMIT 1`, [vaultToken])
+  const vault = await vaults.getByToken(vaultToken)
 
-  if (!vault || !vault.hash || vault.hash !== hash) {
-    throw new HttpError(404, 'The vault is not found')
+  if (!vault || vault.password_hash !== passwordHash) {
+    throw new HttpError(404, 'Vault not found')
   }
 
-  const authToken = security.randomToken()
-
-  /* Store the auth -> vault token relation */
-  await redis.hset('auths', authToken, vault.token)
-
-  res.status(200).json({ token: authToken })
+  res.json(createJWT({ vaultToken }))
 }))
 
 /**
- * All the code below requires authentication to work
+ * Get Vault information (name, created_at)
  */
-
-const authMiddleware = async (req, res, next) => {
+router.get('/:vaultToken', routeHandler(async (req, res) => {
   const { vaultToken } = req.params
-  const { token } = req.query
+  const jwtToken = req.header('authorization')
 
-  /* Validate the token from redis */
-  const authVaultToken = await redis.hget('auths', token || '')
-
-  if (!authVaultToken || vaultToken !== authVaultToken) {
-    next(new HttpError(404, 'The vault is not found or the token is invalid'))
-  } else {
-    next()
+  if (!jwtToken) {
+    throw new HttpError(404, 'Vault not found')
   }
-}
 
-/**
- * Get vault information by token
- */
-router.get('/:vaultToken', authMiddleware, asyncMiddleware(async (req, res) => {
-  const { vaultToken } = req.params
+  const jwtData = readJWT(jwtToken)
 
-  const vault = await database.queryOne<Vault>(`SELECT * FROM vault WHERE token = ? LIMIT 1`, [vaultToken])
-  const vaultView = _.omit(vault, ['hash'])
+  if (jwtData.vaultToken !== vaultToken) {
+    throw new HttpError(404, 'Vault not found')
+  }
 
-  res.status(200).json(vaultView)
+  const vault = await vaults.getByToken(vaultToken)
+
+  res.json(_.pick(vault, ['name', 'created_at']))
 }))
 
 /**
- * Update the vault (there is actually nothing to update for now)
+ * Update the vault
  */
-router.put('/:vaultToken', authMiddleware, asyncMiddleware(async (req, res) => {
-  const { vaultToken } = req.params
+// TODO
 
-  /* Update the database object */
-  // const vault = await database.queryOne<Vault>(`SELECT * FROM vault WHERE token = ? LIMIT 1`, [vaultToken])
+/**
+ * Delete the vault
+ */
+// TODO
 
-  /* / */
-  res.sendStatus(200)
-}))
+/**
+ * Files router
+ */
+// TODO
 
-/* Delete the vault (token: string) */
-router.delete('/:vaultToken', (req, res) => {
-  /* Validate the token */
-  /* Delete data in db + files cascade */
-})
-
-/* Get vault files hierarchy (token: string, path: string = '/') */
-router.use('/:vaultToken/files', authMiddleware, filesRouter)
+//
+// /**
+//  * All the code below requires authentication to work
+//  */
+//
+// const authMiddleware = async (req, res, next) => {
+//   const { vaultToken } = req.params
+//   const { token } = req.query
+//
+//   /* Validate the token from redis */
+//   const authVaultToken = await redis.hget('auths', token || '')
+//
+//   if (!authVaultToken || vaultToken !== authVaultToken) {
+//     next(new HttpError(404, 'The vault is not found or the token is invalid'))
+//   } else {
+//     next()
+//   }
+// }
+//
+// /**
+//  * Get vault information by token
+//  */
+// router.get('/:vaultToken', authMiddleware, asyncMiddleware(async (req, res) => {
+//   const { vaultToken } = req.params
+//
+//   const vault = await database.queryOne<Vault>(`SELECT * FROM vault WHERE token = ? LIMIT 1`, [vaultToken])
+//   const vaultView = _.omit(vault, ['hash'])
+//
+//   res.status(200).json(vaultView)
+// }))
+//
+// /**
+//  * Update the vault (there is actually nothing to update for now)
+//  */
+// router.put('/:vaultToken', authMiddleware, asyncMiddleware(async (req, res) => {
+//   const { vaultToken } = req.params
+//
+//   /* Update the database object */
+//   // const vault = await database.queryOne<Vault>(`SELECT * FROM vault WHERE token = ? LIMIT 1`, [vaultToken])
+//
+//   /* / */
+//   res.sendStatus(200)
+// }))
+//
+// /* Delete the vault (token: string) */
+// router.delete('/:vaultToken', (req, res) => {
+//   /* Validate the token */
+//   /* Delete data in db + files cascade */
+// })
+//
+// /* Get vault files hierarchy (token: string, path: string = '/') */
+// router.use('/:vaultToken/files', authMiddleware, filesRouter)
 
 export default router
